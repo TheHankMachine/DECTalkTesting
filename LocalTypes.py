@@ -5,7 +5,7 @@ class Note(TypedDict):
     duration: float # duration in milliseconds
     phoneme: str # phoneme
 
-
-type Quantizer = Callable[[List[Note]], str]
+type DurationQuantizer = Callable[[List[Note]], str]
 type NoteGenerator = Callable[[], List[Note]]
+type PhonemeDistributor = Callable[[float, List[str]], List[float]]
 

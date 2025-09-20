@@ -10,13 +10,14 @@ def naive_quantizer(notes: List[Note]) -> str:
 
 
 def reactive_error_quantizer(notes: List[Note]) -> str:
+    # This is the approach I am currently using
     acc_err = 0
 
     out = ""
     for note in notes:
         target_ms = note["duration"]
 
-        input_ms = int((target_ms - acc_err - 4))
+        input_ms = int((target_ms - acc_err - 10))
 
         out += f"{note["phoneme"]}<{input_ms},{note["pitch"]}>"
 
