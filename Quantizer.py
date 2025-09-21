@@ -19,7 +19,10 @@ def reactive_error_quantizer(notes: List[Note]) -> str:
 
         input_ms = int((target_ms - acc_err - 10))
 
-        out += f"{note["phoneme"]}<{input_ms},{note["pitch"]}>"
+        if note["phoneme"] == "_":
+            out += f"{note["phoneme"]}<{input_ms}>"
+        else:
+            out += f"{note["phoneme"]}<{input_ms},{note["pitch"]}>"
 
         # Dear David,
         #
@@ -35,3 +38,4 @@ def reactive_error_quantizer(notes: List[Note]) -> str:
         acc_err += (out_ms - target_ms)
 
     return out
+

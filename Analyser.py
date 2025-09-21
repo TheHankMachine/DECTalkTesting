@@ -3,20 +3,23 @@ import Plotter
 from LocalTypes import *
 
 
-def analyse(notes: List[Note], quantizer: DurationQuantizer, beats:List[Note]=None) -> None:
-    out_path = "temp/out.wav"
+def analyse(notes: List[Note], quantizers: DurationQuantizer | List[DurationQuantizer], beats:List[Note]=None) -> None:
+    if not isinstance(quantizers, List):
+        quantizers = [quantizers]
 
-    command = "[:phoneme on][" + quantizer(notes) + "]"
+    for i, quantizer in enumerate(quantizers):
+        out_path = "temp/out.wav"
+        command = "[:phoneme on][" + quantizer(notes) + "]"
 
-    DECTalk.say_to_path(command, out_path)
+        DECTalk.say_to_path(command, out_path)
 
-    Plotter.plot_wav_samples_from_path(out_path)
+        Plotter.plot_wav_samples(out_path, offset=i*0.5)
+
     Plotter.plot_beat_lines(notes if beats is None else beats)
 
     Plotter.show()
 
     #TODO: add librosa beat detection maybe
-
 
 # # old beat detection code:
 # def add_beat_lines(wav_filepath):
