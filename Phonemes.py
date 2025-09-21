@@ -24,6 +24,12 @@ def fixed_plosive_proportional_distributor(total_duration: float, phonemes: List
 
     num_plosive = sum([phoneme in PLOSIVES for phoneme in phonemes])
     plosive_time = num_plosive * plosive_duration
+
     total_duration -= plosive_time
 
-    return [plosive_duration if phoneme in PLOSIVES else total_duration * (syllabic_prop if phoneme in SYLLABIC else (1 - syllabic_prop) / (len(phonemes) - 1 - num_plosive)) for phoneme in phonemes]
+    syllabic_time = total_duration if len(phonemes) - 1 - num_plosive == 0 else total_duration * syllabic_prop
+    consonant_time = 0 if len(phonemes) - 1 - num_plosive == 0 else total_duration * (1 - syllabic_prop) / (len(phonemes) - 1 - num_plosive)
+
+    return [[consonant_time, plosive_duration, syllabic_time][(phoneme in PLOSIVES) + 2 * (phoneme in SYLLABIC)] for phoneme in phonemes]
+
+    # return [plosive_duration if phoneme in PLOSIVES else total_duration * (syllabic_prop if phoneme in SYLLABIC else (1 - syllabic_prop) / (len(phonemes) - 1 - num_plosive)) for phoneme in phonemes]

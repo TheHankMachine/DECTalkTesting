@@ -15,7 +15,9 @@ def analyse(notes: List[Note], quantizers: DurationQuantizer | List[DurationQuan
 
         Plotter.plot_wav_samples(out_path, offset=i*0.5)
 
-    Plotter.plot_beat_lines(notes if beats is None else beats)
+        Plotter.plot_beat_lines(notes)
+
+    Plotter.plot_beat_regions(notes if beats is None else beats)
 
     Plotter.show()
 

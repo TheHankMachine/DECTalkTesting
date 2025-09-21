@@ -4,6 +4,7 @@ from LocalTypes import *
 
 
 def generate_from_lyrics(notes: List[Note], lyrics: List[str], distributor: PhonemeDistributor) -> List[Note]:
+    # This is my current approach
     out = []
     i = 0
 
@@ -25,6 +26,8 @@ def generate_from_lyrics(notes: List[Note], lyrics: List[str], distributor: Phon
 
             out += [Note(duration=duration, pitch=notes[i]["pitch"], phoneme=phoneme) for duration, phoneme in zip(durations, phonemes)]
             i += 1
+
+    print(out)
 
     return out
 
