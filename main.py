@@ -2,39 +2,23 @@ import Generator
 import Quantizer
 import Analyser
 import Phonemes
-from Analyser import analyse
 from LocalTypes import *
 
+repeat = 1
+# lyrics = "hat _"
+# syllable_split_lyrics = "hat _"
+lyrics = "mister sand man _ I'm so alone _ don't have nobody _ to call my own"
+syllable_split_lyrics = "mis ter sand man _ I'm so a lone _ don't have no bo dy _ to call my own"
 
-source_notes = [
-       Note(duration=196.078, pitch=1, phoneme="_"),
-       Note(duration=196.078, pitch=20, phoneme="dear"),
-       Note(duration=196.078, pitch=24, phoneme="in"),
-       Note(duration=196.078, pitch=27, phoneme="spir"),
-       Note(duration=196.078, pitch=32, phoneme="a"),
-       Note(duration=196.078, pitch=27, phoneme="tion"),
-       Note(duration=196.078, pitch=24, phoneme="i'm"),
-       Note(duration=196.078, pitch=20, phoneme="the"),
-       Note(duration=196.078, pitch=22, phoneme="fool"),
-       Note(duration=196.078, pitch=22, phoneme="in"),
-       Note(duration=196.078, pitch=22, phoneme="your"),
-       Note(duration=392.156, pitch=24, phoneme="wake"),
-       Note(duration=196.078, pitch=1, phoneme="_"),
-       Note(duration=196.078, pitch=19, phoneme="you"),
-       Note(duration=196.078, pitch=20, phoneme="for"),
-       Note(duration=196.078, pitch=22, phoneme="got"),
-       Note(duration=392.156, pitch=22, phoneme="a"),
-       Note(duration=196.078, pitch=20, phoneme="bout"),
-       Note(duration=392.156, pitch=1, phoneme="_"),
-       Note(duration=196.078, pitch=19, phoneme="my"),
-       Note(duration=392.156, pitch=20, phoneme="luc"),
-       Note(duration=392.156, pitch=20, phoneme="ky"),
-       Note(duration=196.078, pitch=8, phoneme="break"),
-] * 2
+lyrics = lyrics.split(" ") * repeat
+syllable_split_lyrics = syllable_split_lyrics.split(" ") * repeat
 
-lyrics = "_ dear inspiration I'm the fool in your wake _ you forgot about _ my lucky break".split(" ") * 2
+source_notes = [Note(duration=400, phoneme=lyric, pitch=25) for lyric in syllable_split_lyrics]
 
 notes = Generator.generate_from_lyrics(source_notes, lyrics, Phonemes.fixed_plosive_proportional_distributor)
 
-Analyser.analyse(notes, Quantizer.reactive_error_quantizer, beats=source_notes)
+Analyser.analyse(notes, Quantizer.naive_quantizer, source_notes)
+#
 
+# notes = Generator.generate_phoneme_pulses([400], 50, ["ah", "_"])
+# Analyser.analyse(notes, Quantizer.reactive_error_quantizer)

@@ -8,7 +8,7 @@ SAY_PATH = os.path.join(BUILD_PATH, "say.exe")
 
 def system(shell_command: str) -> None:
     result = os.system(shell_command)
-    #TODO: implement better error info
+
     if result != 0: raise Exception(f"{result}\nfailed to run command")
 
 
@@ -26,7 +26,8 @@ def say_from_path(in_path: str, out_path: str) -> None:
 
 def say_to_path(input: str, out_path: str) -> None:
     # write to file to bypass window's max command prompt length of 8191
-    if len(input) >= 8_000:
+    if len(input) >= 500:
+        print("having to use file :/")
         in_path = os.path.join(TEMP_PATH, "temp.txt")
         with open(in_path, "w") as file: file.write(input)
         say_from_path(in_path, out_path)

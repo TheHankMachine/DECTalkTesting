@@ -17,7 +17,7 @@ def proportional_distributor(total_duration: float, phonemes: List[str], syllabi
     return [total_duration * (syllabic_prop if phoneme in SYLLABIC else (1 - syllabic_prop) / (len(phonemes) - 1)) for phoneme in phonemes]
 
 
-def fixed_plosive_proportional_distributor(total_duration: float, phonemes: List[str], plosive_duration=20, syllabic_prop=0.85) -> List[float]:
+def fixed_plosive_proportional_distributor(total_duration: float, phonemes: List[str], plosive_duration=30, syllabic_prop=0.75) -> List[float]:
     # this is the approach I am currently using
     if len(phonemes) == 1:
         return [total_duration]
@@ -32,4 +32,3 @@ def fixed_plosive_proportional_distributor(total_duration: float, phonemes: List
 
     return [[consonant_time, plosive_duration, syllabic_time][(phoneme in PLOSIVES) + 2 * (phoneme in SYLLABIC)] for phoneme in phonemes]
 
-    # return [plosive_duration if phoneme in PLOSIVES else total_duration * (syllabic_prop if phoneme in SYLLABIC else (1 - syllabic_prop) / (len(phonemes) - 1 - num_plosive)) for phoneme in phonemes]
