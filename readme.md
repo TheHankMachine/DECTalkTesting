@@ -20,9 +20,8 @@ If you don't want to read about what all you need to account for, just see
 
 I want to programmatically provide an input to DECTalk such that it sings perfectly in time,
 making it viable for musical applications. The main difficulty comes from taking floating point note durations and quantizing them into
-DECTalk string input.
-
-[//]: # (See [LocalTypes.py]&#40;LocalTypes.py&#41; for the structure of `Note`.)
+DECTalk string input. This will be the focus of this readme. Other challenges such as syllable splitting and
+distributing phonemes are tackled in this repo but are not covered this explanation.
 
 
 ## The Naive Approach
@@ -51,7 +50,7 @@ as `(10 * (t + 4)) // 64`. This means that if we input `ah<400,28>` ("ah" for 40
 will sing for 63 frames or 403.2ms. This error is not insignificant and easily
 accumulates into noticeable timing issues.
 
-In this plot, we can see the output wav file falling out of time
+In this plot, we can see the output waveform file falling out of timed
 with the beat lines:
 ![fig1](images/fig1.png)
 
@@ -74,7 +73,6 @@ def reactive_error_quantizer(notes: List[Note]) -> str:
     for note in notes:
         target_ms = note["duration"]
 
-        # 
         input_ms = int(target_ms - acc_err)
         
         out_command += f"{note["phoneme"]}<{input_ms},{note["pitch"]}>"
@@ -101,7 +99,8 @@ DECTalk discards the shorter phoneme. Being unaware of this can lead to a ton of
 
 Fortunately, this is fairly easy to remedy: don't give these cases as input to DECTalk. There's a list
 of how each vowel gets combined with `r` somewhere in DECTalk's code which should tell you what cases
-to avoid. Alternatively, you can replace `r` phoneme with `rx`, which will not get combined.
+to avoid. Alternatively, you can replace `r` phoneme with `rx`, which will not get combined
+(this is worth doing for all `r` phonemes anyway so that if you input lyrics "a rabbit" you don't get a weird result).
 
 ### Dummy Vowel Insertion
 
@@ -135,11 +134,9 @@ This makes accounting for dummy vowel insertion more difficult.
 This brings us to my current approach. In short, we split clauses by periodically adding
 commas before silence phonemes, accounting for the extra frames this introduces.
 
-In this approach, we keep track of the number of phonemes in the last clause. If this number is greater 
-than an arbitrary threshold, then we insert a comma at the next silence phoneme.
-
-To add a comma, we need to exit phonemic mode, add the comma, and reenter phonemic mode. When doing this, 
-independently of the comma duration, the output pauses for 2 frames.
+We keep track of the number of phonemes in the last clause. If this number is greater 
+than an arbitrary threshold, then we insert a comma at the next silence phoneme. To add a comma, we need to exit phonemic mode, add the comma, and re-enter phonemic mode. When doing this 
+the output pauses for 2 frames (independently of the comma duration).
 
 ```python
 COMMA_INSERTION_THRESHOLD = 100
