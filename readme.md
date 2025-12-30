@@ -1,4 +1,4 @@
-# How to Get DECTalk to in Stay Time.
+# How to Get DECTalk to Stay in Time.
 
 
 
