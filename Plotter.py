@@ -1,7 +1,7 @@
 import WavUtil
 import matplotlib.pyplot as plt
 from typing import List
-from LocalTypes import Note
+from LocalTypes import DecNote
 from wave import Wave_read
 
 
@@ -20,7 +20,7 @@ def plot_wav_samples(samples: List[int] | str | Wave_read, alpha=1, sample_rate=
     plt.xlabel("time (s)")
 
 
-def plot_beat_lines(notes: List[Note]):
+def plot_beat_lines(notes: List[DecNote]):
     x = 0
     for note in notes:
         plt.text((x + note["duration"] * 0.5) / 1000, 0.025, note["phoneme"], fontsize=6, ha='center', va='center', weight='bold')
@@ -29,12 +29,15 @@ def plot_beat_lines(notes: List[Note]):
         x += note["duration"]
 
 
-def plot_beat_regions(notes: List[Note]):
+def plot_beat_regions(notes: List[DecNote]):
     colors = ["tab:blue", "tab:orange"]
 
     x = 0
     for i in range(len(notes)):
-        plt.text((x + notes[i]["duration"] * 0.5) / 1000, 0, notes[i]["phoneme"], fontsize=6, ha='center', va='center', weight='bold')
+        plt.text((x + notes[i]["duration"] * 0.5) / 1000, 0,
+                 notes[i]["phoneme"] if "phoneme" in notes[i] else notes[i]["syllable"]
+
+                 , fontsize=6, ha='center', va='center', weight='bold')
 
         plt.axvspan(x / 1000, (x + notes[i]["duration"]) / 1000, color=colors[i % len(colors)], alpha=0.15)
         x += notes[i]["duration"]

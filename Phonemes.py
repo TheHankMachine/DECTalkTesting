@@ -1,6 +1,5 @@
 from typing import List
 
-
 PLOSIVES     = ["P", "B", "T", "D", "K", "G"]
 NASALS       = ["M", "N", "NX"]
 FRICATIVES   = ["F", "V", "TH", "DH", "S", "Z", "SH", "ZH", "HX"]
@@ -8,6 +7,59 @@ AFFRICATIVES = ["CH", "JH"]
 LIQUIDS      = ["L", "R"]
 GLIDES       = ["W", "Y"]
 SYLLABIC     = ["IY", "IH", "EY", "EH", "AE", "AA", "AY", "AW", "AH", "AO", "OW", "OY", "UH", "UW", "RR", "YU", "AX", "IX", "IR", "ER", "AR", "OR", "UR"]
+
+PHONEMES = [
+    *PLOSIVES,
+    *NASALS,
+    *FRICATIVES,
+    *AFFRICATIVES,
+    *LIQUIDS,
+    *GLIDES,
+    *SYLLABIC
+]
+
+PHONEMES.sort(key=len, reverse=True)
+
+PHONEME_PRIORITY = {}
+def misc_helper(ph, weight):
+    for phoneme in ph:
+        PHONEME_PRIORITY[phoneme] = weight
+
+misc_helper(PLOSIVES, 0)
+misc_helper(NASALS, 2)
+misc_helper(FRICATIVES, 2)
+misc_helper(AFFRICATIVES, 1)
+misc_helper(LIQUIDS, 3)
+misc_helper(GLIDES, 5)
+misc_helper(SYLLABIC, 7)
+
+def get_primary_phoneme(s: str) -> str:
+    phonemes = s.split(" ")
+    max = (-1, "")
+
+    for phoneme in phonemes:
+        # TODO: remove me
+        if phoneme not in PHONEME_PRIORITY:
+            continue
+
+        if PHONEME_PRIORITY[phoneme] > max[0]:
+            max = (PHONEME_PRIORITY[phoneme], phoneme)
+
+    return max[1]
+
+
+def break_into_phonemes(s: str) -> list[str]:
+    result = []
+
+    while len(s) > 0:
+        for phoneme in PHONEMES:
+            if s.startswith(phoneme):
+                s = s[len(phoneme) - 1:]
+                result.append(phoneme)
+                break
+        s = s[1:]
+
+    return result
 
 
 def proportional_distributor(total_duration: float, phonemes: List[str], syllabic_prop=0.85) -> List[float]:

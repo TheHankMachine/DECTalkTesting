@@ -3,7 +3,7 @@ from CMUDict.CMUDict import CMUDict
 from LocalTypes import *
 
 
-def generate_from_lyrics(notes: List[Note], lyrics: List[str], distributor: PhonemeDistributor) -> List[Note]:
+def generate_from_lyrics(notes: List[DecNote], lyrics: List[str], distributor: PhonemeDistributor) -> List[DecNote]:
     out = []
     i = 0
 
@@ -11,7 +11,7 @@ def generate_from_lyrics(notes: List[Note], lyrics: List[str], distributor: Phon
         lyric = lyric.upper()
 
         if lyric == "_":
-            out += [Note(phoneme="_", duration=notes[i]["duration"], pitch=notes[i]["pitch"])]
+            out += [DecNote(phoneme="_", duration=notes[i]["duration"], pitch=notes[i]["pitch"])]
             i += 1
             continue
 
@@ -23,12 +23,12 @@ def generate_from_lyrics(notes: List[Note], lyrics: List[str], distributor: Phon
             phonemes = syllable.split(" ")
             durations = distributor(notes[i]["duration"], phonemes)
 
-            out += [Note(duration=duration, pitch=notes[i]["pitch"], phoneme=phoneme) for duration, phoneme in zip(durations, phonemes)]
+            out += [DecNote(duration=duration, pitch=notes[i]["pitch"], phoneme=phoneme) for duration, phoneme in zip(durations, phonemes)]
             i += 1
 
     return out
 
 
-def generate_phoneme_pulses(pulse_lens: List[float], repeat=1, phonemes=["ah", "_"], pitches=[10]) -> List[Note]:
-    return [Note(duration=pulse_lens[i % len(pulse_lens)], pitch=pitches[i % len(pitches)], phoneme=phonemes[i % len(phonemes)]) for i in range(repeat)]
+def generate_phoneme_pulses(pulse_lens: List[float], repeat=1, phonemes=["ah", "_"], pitches=[10]) -> List[DecNote]:
+    return [DecNote(duration=pulse_lens[i % len(pulse_lens)], pitch=pitches[i % len(pitches)], phoneme=phonemes[i % len(phonemes)]) for i in range(repeat)]
 

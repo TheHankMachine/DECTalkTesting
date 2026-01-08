@@ -6,7 +6,7 @@
 
 I am using a modified version of DECTalk to achieve accurate timing. 
 As a base, I use the new vocal tract model with a sample rate of 10kHz, employing the following changes:
- - **Set the duration of a comma pause to zero** (this in the only change which improves timing accuracy).
+ - **Set the duration of a comma pause to zero**. this in the only change which improves timing accuracy.
 - Changed `notetab[]` to use A4=440Hz tuning.
 - Improved pitch correction (replacing the prior linear correction factor which is wrong).
 - Expanded vocal range in `notetab[]` (from C2-C5 to A2-E5).
@@ -21,7 +21,7 @@ If you don't want to read about what all you need to account for, just see
 I want to programmatically provide an input to DECTalk such that it sings perfectly in time,
 making it viable for musical applications. The main difficulty comes from taking floating point note durations and quantizing them into
 DECTalk string input. This will be the focus of this readme. Other challenges such as syllable splitting and
-distributing phonemes are tackled in this repo but are not covered this explanation.
+distributing phonemes are tackled in this repo but are not covered in this explanation.
 
 
 ## The Naive Approach
@@ -36,12 +36,12 @@ def naive_quantizer(notes: List[Note]) -> str:
     return out_command + "]"
 ```
 
-I feel that is important to discuss why this does not work.
+I feel that it is important to discuss why this does not work.
 
 DECTalk produces audio in frames consisting of a fixed number of samples. This number depends on the sample rate, 
 which in our case is 10kHz, meaning the frame size is 64 samples. 
 
-This means that the output duration of each phoneme can only last a multiples of 
+This means that the output duration of each phoneme can only last for a multiple of 
 64 samples or 6.4ms. As a consequence of this, we can only guarantee 
 timing accuracy within 3.2ms. 
 
@@ -50,8 +50,8 @@ as `(10 * (t + 4)) // 64`. This means that if we input `ah<400,28>` ("ah" for 40
 will sing for 63 frames or 403.2ms. This error is not insignificant and easily
 accumulates into noticeable timing issues.
 
-In this plot, we can see the output waveform file falling out of timed
-with the beat lines:
+In this plot, we can see the output waveform falling out of time with the beat,
+which is marked by veritcal red lines every 400ms.
 ![fig1](images/fig1.png)
 
 
@@ -85,7 +85,7 @@ def reactive_error_quantizer(notes: List[Note]) -> str:
     return out_command + "]"
 ```
 
-With this approach, the output lines up with the beats fairly well:
+This improvement is evident:
 ![fig2](images/fig2.png) 
 
 
@@ -95,35 +95,36 @@ With this approach, the output lines up with the beats fairly well:
 
 When processing phonemic input, DECTalk will combine some groups of phonemes into a single
 phoneme. For example, if you input, `iy r`, DECTalk will change it to `ir`. When doing this,
-DECTalk discards the shorter phoneme. Being unaware of this can lead to a ton of headache (speaking form experience).
+DECTalk discards the shorter phoneme. Being unaware of this can lead to significant headache (speaking from experience).
 
-Fortunately, this is fairly easy to remedy: don't give these cases as input to DECTalk. There's a list
+Fortunately, this is fairly easy to remedy; just don't give these cases as input to DECTalk. There's a list
 of how each vowel gets combined with `r` somewhere in DECTalk's code which should tell you what cases
-to avoid. Alternatively, you can replace `r` phoneme with `rx`, which will not get combined
-(this is worth doing for all `r` phonemes anyway so that if you input lyrics "a rabbit" you don't get a weird result).
+to avoid. Alternatively, you can replace `r` phoneme with `rx`, which will not get combined.
+This is worth doing for all `r` phonemes anyway to avoid unexpected behaviour.
 
 ### Dummy Vowel Insertion
 
-When a plosive phoneme is followed by a silence, a "dummy vowel" is 
-automatically inserted after the plosive. This dummy vowel has a fixed duration 
-(depending on the language) of 4 frames. 
+When a plosive phoneme directly precedes silence, a "dummy vowel" is 
+automatically inserted after the plosive. This dummy vowel has a fixed duration of 4 frames for English DECTalk. 
 
-This means our relative error approach falls out of time when quantising words
-that end with a plosive:
+This means our reactive error approach falls out of time when quantising words
+that end with a plosive.
+
+[//]: # (TODO: Mention what this plot is)
 ![fig3](images/fig3.png) 
 
-Because this duration is fixed, we can account for it easily (not really tho)
+[//]: # (Because this duration is fixed, we can account for it easily &#40;not really tho&#41;)
 
 ### Comma Insertion
 
 DECTalk processes phonemes in clauses. Each clause is processed one at a time and passed into a buffer.
-To prevent the buffer from overflowing, the code sets a maximum of 300 phonemes per clause.
+To prevent the buffer from overflowing, DECTalk has a maximum of 300 phonemes per clause.
 
 If your input is longer than this limit, DECTalk will automatically insert a comma at the 298th phoneme.
 This comma will cause the output to pause for a short time, which is undesirable. 
 
-This is why I set the comma duration to zero when modifying DECTalk. This makes this stutter near nonexistent 
-(the gain will fall to zero at the end of a clause; the output is still effected, just not the timing).
+This is why I set the comma duration to zero when modifying DECTalk. This makes this stutter near nonexistent.
+The gain will fall to zero at the end of a clause; the output is still affected, just not the timing.
 
 The code will also not insert dummy vowels if the clause already has the maximum number of phonemes. 
 This makes accounting for dummy vowel insertion more difficult.
@@ -136,7 +137,7 @@ commas before silence phonemes, accounting for the extra frames this introduces.
 
 We keep track of the number of phonemes in the last clause. If this number is greater 
 than an arbitrary threshold, then we insert a comma at the next silence phoneme. To add a comma, we need to exit phonemic mode, add the comma, and re-enter phonemic mode. When doing this 
-the output pauses for 2 frames (independently of the comma duration).
+the output pauses for 2 frames, independent of the comma duration.
 
 ```python
 COMMA_INSERTION_THRESHOLD = 100

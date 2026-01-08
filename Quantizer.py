@@ -3,7 +3,7 @@ import Plotter
 from LocalTypes import *
 
 
-def reactive_clause_conscience_quantizer(notes: List[Note]) -> str:
+def reactive_clause_conscience_quantizer(notes: List[DecNote]) -> str:
     # This is the approach I am currently using
 
     # Constants
@@ -68,14 +68,14 @@ def reactive_clause_conscience_quantizer(notes: List[Note]) -> str:
 
 
 
-def naive_quantizer(notes: List[Note]) -> str:
+def naive_quantizer(notes: List[DecNote]) -> str:
     out = ""
     for note in notes:
         out += f"{note["phoneme"]}<{int(note["duration"])},{note["pitch"]}>"
 
     return out
 
-def reactive_error_quantizer(notes: List[Note]) -> str:
+def reactive_error_quantizer(notes: List[DecNote]) -> str:
     # Old approach
     acc_err = 0
 
