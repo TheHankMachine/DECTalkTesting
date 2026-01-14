@@ -236,33 +236,33 @@ def spread_phonemes(notes: list[Note]) -> list[DecNote]:
     return result
 
 
-# if __name__ == "__main__":
-    # p = 25 - 12
+if __name__ == "__main__":
+    p = 25 - 12
 
-    # process([
-        # e_(-1, 700, "_"),
-        # e_(p, 350, "you"),
-        # e_(p, 700, "gave"),
-        # e_(p, 350, "me"),
-        # e_(p, 700, "some-"),
-        # e_(p, 350, "thing"),
-        # e_(-1, 1750, "_"),
-        # e_(p + 2, 350, "I"),
-        # e_(p + 2, 700, "und-"),
-        # e_(p + 2, 350, "er"),
-        # e_(p + 2, 1050, "stand"),
-        # e_(-1, 1750, "_"),
-        # e_(p, 350, "you"),
-        # e_(p, 700, "gave"),
-        # e_(p, 350, "me"),
-        # e_(p, 700, "lov-"),
-        # e_(p + 2, 350, "ing"),
-        # e_(p + 5, 700, "in"),
-        # e_(p + 9, 350, "the"),
-        # e_(p + 7, 1050, "palm"),
-        # e_(p + 7, 700, "of"),
-        # e_(p + 7, 350, "my"),
-        # e_(p + 7, 1050, "hand"),
+    process([
+        create_event(-1, 700, "_"),
+        create_event(p, 350, "you"),
+        create_event(p, 700, "gave"),
+        create_event(p, 350, "me"),
+        create_event(p, 700, "some-"),
+        create_event(p, 350, "thing"),
+        create_event(-1, 1750, "_"),
+        create_event(p + 2, 350, "I"),
+        create_event(p + 2, 700, "und-"),
+        create_event(p + 2, 350, "er"),
+        create_event(p + 2, 1050, "stand"),
+        create_event(-1, 1750, "_"),
+        create_event(p, 350, "you"),
+        create_event(p, 700, "gave"),
+        create_event(p, 350, "me"),
+        create_event(p, 700, "lov-"),
+        create_event(p + 2, 350, "ing"),
+        create_event(p + 5, 700, "in"),
+        create_event(p + 9, 350, "the"),
+        create_event(p + 7, 1050, "palm"),
+        create_event(p + 7, 700, "of"),
+        create_event(p + 7, 350, "my"),
+        create_event(p + 7, 1050, "hand"),
 
         # e_(p, 1000, "fly"),
-    # ])
+    ])
